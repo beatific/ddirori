@@ -40,6 +40,7 @@ public abstract class BeanContainer {
 	}
 	
 	protected Object load(BeanDefinition definition) {
+		
 		Object object = definition.getConstructor().create(definition.getParentElementDefinition(), definition.getChildElementDeifinitions(), loadAttributes(definition.getAttributes()));
 		
 		switch(definition.getTag()) {

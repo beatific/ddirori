@@ -18,7 +18,7 @@ public class AttributeExtractor {
 	private AttributeTypeCaster typeCaster = null;
 	private DefinitionTypeCaster definitionCaster = null;
 	private RelationMap<Object, Object> relations = null;
-	private RelationValueHolder holder = null;
+	private RelationHolder holder = null;
 	
 	public AttributeExtractor(RelationMap<Object, Object> relations) {
 		this.typeCaster = new AttributeTypeCaster();
@@ -38,7 +38,7 @@ public class AttributeExtractor {
 		
 	}
 	
-	public Object extract(BeanContainer container, String attribute, RelationValueHolder holder) {
+	public Object extract(BeanContainer container, String attribute, RelationHolder holder) {
 		this.holder = holder;
 		return extractAttribute(container, attribute);
 	}
