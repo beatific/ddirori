@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.beatific.ddirori.meta.BeanDefinition;
 
-public interface Constructor {
+public interface Constructor<T> {
 
-	public Object create(BeanDefinition parent, List<BeanDefinition> children, Map<String, Object>attributes);
+	public T create(BeanDefinition parent, List<BeanDefinition> children, Map<String, Object>attributes);
 }

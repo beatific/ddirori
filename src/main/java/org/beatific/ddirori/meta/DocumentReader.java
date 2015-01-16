@@ -15,12 +15,13 @@ public class DocumentReader {
 		try {
 			def = meta.getMeta(tagName);
 		} catch (BeanDefinitionNotFoundException e) {
-			throw new DocumentParseException();
+			throw new DocumentParseException("Can't find BeanDefinition[" + tagName + "]");
 		}
 		completeElementDefinition(element, def, meta);
+		meta.loadLevel();
 	}
 	
-	protected BeanDefinition completeElementDefinition(Node element,BeanDefinition parentDefinition, MetaInfo meta) {
+	protected BeanDefinition completeElementDefinition(Node element, BeanDefinition parentDefinition, MetaInfo meta) {
 		
 		BeanDefinition def;
 		try {

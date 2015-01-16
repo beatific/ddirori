@@ -36,7 +36,7 @@ public class MetaInfo {
 		orderedMeta.put(level, definition);
 	}
 	
-	public void loadLevel() throws ReferenceNotFoundException {
+	public void loadLevel() {
 	    Integer level = orderedMeta.size() + 1;
 	    this.level = level;
 	    loadLevelByMetaAnalysis(level);

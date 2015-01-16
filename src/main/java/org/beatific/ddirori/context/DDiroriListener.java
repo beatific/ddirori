@@ -9,6 +9,7 @@ import org.beatific.ddirori.context.impl.XmlApplicationContext;
 public class DDiroriListener implements ServletContextListener {
 
 	private static final String ROOT_APPLICATION_CONTEXT = ApplicationContext.class.getName() + ".ROOT";
+	private static final String CONFIG_LOCATION = "configFileLocation";
 	
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext sc = event.getServletContext();
@@ -20,7 +21,13 @@ public class DDiroriListener implements ServletContextListener {
 	}
 
 	protected ApplicationContext createWebApplicationContext(ServletContext sc){
-		ApplicationContext context  = new XmlApplicationContext();
+		
+		XmlApplicationContext context  = new XmlApplicationContext();
+		
+		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION);
+		if (configLocationParam != null) {
+			context.setFilePath(configLocationParam);
+		}
 		sc.setAttribute(ROOT_APPLICATION_CONTEXT, context);
 		return context;
 	}

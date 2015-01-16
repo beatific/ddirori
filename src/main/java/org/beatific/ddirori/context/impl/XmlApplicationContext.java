@@ -17,9 +17,17 @@ import org.w3c.dom.Document;
 
 public class XmlApplicationContext extends ApplicationContext {
 
-	private boolean validation;
-	private boolean namespaceAware;
+	private boolean validation = false;
+	private boolean namespaceAware = true;
 	private String filePath;
+	
+	public XmlApplicationContext() {
+		super(null);
+	}
+	
+	public XmlApplicationContext(String basePackage) {
+	    super(basePackage);	
+	}
 	
 	protected void initContext() {
 		try {
@@ -70,7 +78,7 @@ public class XmlApplicationContext extends ApplicationContext {
 
 	protected MetaInfo initMeta() {
 		MetaInfo meta = new MetaInfo();
-		for(Class<?> constructor : AnnotationUtils.findClassByAnnotation(Action.class)) {
+		for(Class<?> constructor : AnnotationUtils.findClassByAnnotation(basePackage, Action.class)) {
 			Action annotation = constructor.getAnnotation(Action.class);
 			try {
 				meta.setDefinition(annotation.tag(), new BeanDefinition(annotation, (Constructor)constructor.newInstance()));

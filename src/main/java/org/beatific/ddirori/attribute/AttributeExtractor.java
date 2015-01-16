@@ -19,10 +19,10 @@ public class AttributeExtractor {
 	private DefinitionTypeCaster definitionCaster = null;
 	private final RelationHolder holder;
 	
-	public AttributeExtractor(RelationHolder holder) {
-		this.typeCaster = new AttributeTypeCaster();
+	public AttributeExtractor(RelationHolder holder, String basePackage) {
+		this.typeCaster = new AttributeTypeCaster(basePackage);
 		this.typeCaster.init();
-		this.definitionCaster = new DefinitionTypeCaster();
+		this.definitionCaster = new DefinitionTypeCaster(basePackage);
 		this.definitionCaster.init();
 		this.holder = holder;
 	}

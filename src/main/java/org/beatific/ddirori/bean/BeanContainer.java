@@ -19,11 +19,13 @@ public abstract class BeanContainer {
 	private final RelationMap<Object, BeanDefinition> relations = new OneToNMap<Object, BeanDefinition>();
 	private final AttributeExtractor extractor;
 	private final RelationHolder holder = new RelationHolder();
-
-	public BeanContainer() {
-		extractor = new AttributeExtractor(holder);
-	}
+	protected String basePackage;
 	
+	public BeanContainer(String basePackage) {
+		this.basePackage = basePackage;
+		this.extractor = new AttributeExtractor(holder, basePackage);
+	}
+
 	protected void initContainer() throws BeanDefinitionNotFoundException {
 		MetaInfo meta = buildMetaInfo();
 		init(meta);

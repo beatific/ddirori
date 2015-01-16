@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ddirori xmlns:daram="http://www.beatific.org/schema/ddirori-test"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.beatific.org/schema/ddirori-test http://www.beatific.org/schema/ddirori-test.xsd">
+	<test text="test"/>
+</ddirori>

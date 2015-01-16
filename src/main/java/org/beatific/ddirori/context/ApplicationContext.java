@@ -4,6 +4,10 @@ import org.beatific.ddirori.bean.BeanContainer;
 
 public abstract class ApplicationContext extends BeanContainer {
 
+	public ApplicationContext(String basePackage) {
+		super(basePackage);
+	}
+	
 	public void init() {
 		initContext();
 		ApplicationContextUtils.setApplicationContext(this);

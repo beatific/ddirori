@@ -10,7 +10,12 @@ import org.beatific.ddirori.utils.AnnotationUtils;
 
 public class DefinitionTypeCaster {
 
-	private Map<String, DefinitionTypeResolver<?>> resolvers = new HashMap<String, DefinitionTypeResolver<?>>();
+	private final Map<String, DefinitionTypeResolver<?>> resolvers = new HashMap<String, DefinitionTypeResolver<?>>();
+	private final String basePackage;
+	
+	public DefinitionTypeCaster(String basePackage) {
+		this.basePackage = basePackage;
+	}
 	
 	public Object cast(String type) {
 		DefinitionTypeResolver<?> resolver = resolvers.get(type);
@@ -18,7 +23,7 @@ public class DefinitionTypeCaster {
 	}
 	
 	public void init() {
-		for(Class<?> clazz : AnnotationUtils.findClassByAnnotation(ArgumentType.class)) {
+		for(Class<?> clazz : AnnotationUtils.findClassByAnnotation(basePackage, ArgumentType.class)) {
 			ArgumentType annotation = clazz.getAnnotation(ArgumentType.class);
 			try {
 				resolvers.put(annotation.type(), (DefinitionTypeResolver<?>)clazz.newInstance());

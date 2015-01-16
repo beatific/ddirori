@@ -1,6 +1,6 @@
 package org.beatific.ddirori.meta;
 
-public class ReferenceNotFoundException extends Exception {
+public class ReferenceNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 1167994082582623444L;
 

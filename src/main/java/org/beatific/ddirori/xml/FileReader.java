@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.beatific.ddirori.context.ClassUtils;
+import org.springframework.util.ClassUtils;
 
 public class FileReader {
 
