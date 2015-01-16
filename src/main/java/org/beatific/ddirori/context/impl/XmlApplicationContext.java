@@ -1,6 +1,5 @@
 package org.beatific.ddirori.context.impl;
 
-import org.beatific.ddirori.bean.BeanContainer;
 import org.beatific.ddirori.bean.BeanCreationException;
 import org.beatific.ddirori.bean.Constructor;
 import org.beatific.ddirori.bean.annotation.Action;
@@ -16,18 +15,22 @@ import org.beatific.ddirori.xml.FileReader;
 import org.beatific.ddirori.xml.XmlParseException;
 import org.w3c.dom.Document;
 
-public class XmlApplicationContext extends BeanContainer implements ApplicationContext {
+public class XmlApplicationContext extends ApplicationContext {
 
 	private boolean validation;
 	private boolean namespaceAware;
 	private String filePath;
 	
-	public void initContext() {
+	protected void initContext() {
 		try {
-			init();
+			initContainer();
 		} catch (BeanDefinitionNotFoundException e) {
 			throw new ContextInitializeException("This Context is failed to initialize.");
 		}
+	}
+	
+	protected void destoryContext() {
+		destory();
 	}
 	
 	public void setValidation(boolean validation) {

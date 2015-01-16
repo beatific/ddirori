@@ -4,33 +4,51 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.AttributeExtractor;
+import org.beatific.ddirori.attribute.RelationHolder;
 import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.meta.MetaInfo;
 import org.beatific.ddirori.meta.map.RelationMap;
 import org.beatific.ddirori.meta.map.impl.OneToNMap;
+import org.beatific.ddirori.type.TagType;
 
 public abstract class BeanContainer {
 
 	private final Map<String, Object> container = new HashMap<String, Object>();
 	private final Map<String, Object> temp = new HashMap<String, Object>();
-	private final RelationMap<Object, Object> relations = new OneToNMap<Object, Object>();
-	private final AttributeExtractor extractor = new AttributeExtractor(relations);;
+	private final RelationMap<Object, BeanDefinition> relations = new OneToNMap<Object, BeanDefinition>();
+	private final AttributeExtractor extractor;
+	private final RelationHolder holder = new RelationHolder();
+
+	public BeanContainer() {
+		extractor = new AttributeExtractor(holder);
+	}
 	
-	public void init() throws BeanDefinitionNotFoundException {
+	protected void initContainer() throws BeanDefinitionNotFoundException {
 		MetaInfo meta = buildMetaInfo();
 		init(meta);
 	}
 	
-	protected abstract MetaInfo  buildMetaInfo();
+	public void refresh(Object object) {
+		reloadRefreshableBean(getRelations(object));
+	}
 	
-	protected void init(MetaInfo meta) throws BeanDefinitionNotFoundException {
+	private BeanDefinition getRelations(Object object) {
+		synchronized(relations) {
+		    return relations.get(object);
+		}
+	}
+	
+	protected abstract MetaInfo buildMetaInfo();
+	
+	private void init(MetaInfo meta) throws BeanDefinitionNotFoundException {
 		for(int i = 0 ; i < meta.getLevel(); i++)
 			for(BeanDefinition definition : meta.getMetaByLevel(i))
 				load(definition);
 	}
 	
-	protected Map<String, Object> loadAttributes(Map<String, String> attributes) {
+	private Map<String, Object> loadAttributes(Map<String, String> attributes) {
+		
 		Map<String, Object> map = new HashMap<String, Object>();
 		for(String key : map.keySet()) {
 			String value = attributes.get(key);
@@ -39,11 +57,17 @@ public abstract class BeanContainer {
 		return map;
 	}
 	
-	protected Object load(BeanDefinition definition) {
+	private void chainRelation(BeanDefinition definition){
 		
-		Object object = definition.getConstructor().create(definition.getParentElementDefinition(), definition.getChildElementDeifinitions(), loadAttributes(definition.getAttributes()));
-		
-		switch(definition.getTag()) {
+		for(Object holdedObject : this.holder.getHoldedObjects())
+			synchronized(relations) {
+		        this.relations.put(holdedObject, definition);
+			}
+		this.holder.release();
+	}
+	
+	private synchronized void registerBean(BeanDefinition definition, Object object) {
+        switch(definition.getTag()) {
 		
 		case BEAN :
 			if(container.containsKey(definition.getBeanName()))
@@ -63,14 +87,28 @@ public abstract class BeanContainer {
 		default : 
 			throw new BeanCreationException("Bean Creation Exception : Bean[" + definition.getBeanName() + "]");
 		}
-		return null;
+	}
+	private void load(BeanDefinition definition) {
+		
+		loadWithoutRelation(definition);
+		chainRelation(definition);
 	}
 	
-	public Object getBean(String beanName) {
+	private void reloadRefreshableBean(BeanDefinition definition) {
+		if(definition.getTag() != TagType.TEMP)return;
+		loadWithoutRelation(definition);
+	}
+	
+    private void loadWithoutRelation(BeanDefinition definition) {
+		Object object = definition.getConstructor().create(definition.getParentElementDefinition(), definition.getChildElementDeifinitions(), loadAttributes(definition.getAttributes()));
+		registerBean(definition, object);
+	}
+	
+	public synchronized Object getBean(String beanName) {
 		return container.get(beanName);
 	}
 	
-	public Object getObject(String objectName) {
+	public synchronized Object getObject(String objectName) {
 		Object object = getBean(objectName);
 		if(object == null) {
 			object = temp.get(objectName);
@@ -81,16 +119,18 @@ public abstract class BeanContainer {
 		return object;
 	}
 	
-	public void clearTemp() {
+	public synchronized void clearTemp() {
 		temp.clear();
 	}
 	
-	public void destory() {
+	protected synchronized void destory() {
 		container.clear();
 		temp.clear();
 	}
 	
-	public void setBean(String beanName, Object bean) {
+	public synchronized void setBean(String beanName, Object bean) {
+		if(container.containsKey(beanName))
+			throw new BeanCreationException("Can't initialize duplicated bean[" + beanName + "]");
 		container.put(beanName, bean);
 	}
 }

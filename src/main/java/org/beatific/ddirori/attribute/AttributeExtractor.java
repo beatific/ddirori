@@ -17,15 +17,14 @@ public class AttributeExtractor {
 	private final static String REGEX_STRING = "\\$S\\{(\\w*)\\}";
 	private AttributeTypeCaster typeCaster = null;
 	private DefinitionTypeCaster definitionCaster = null;
-	private RelationMap<Object, Object> relations = null;
-	private RelationHolder holder = null;
+	private final RelationHolder holder;
 	
-	public AttributeExtractor(RelationMap<Object, Object> relations) {
+	public AttributeExtractor(RelationHolder holder) {
 		this.typeCaster = new AttributeTypeCaster();
 		this.typeCaster.init();
 		this.definitionCaster = new DefinitionTypeCaster();
 		this.definitionCaster.init();
-		this.relations = relations;
+		this.holder = holder;
 	}
 	
 	protected Object processReservedWord(String word) {
@@ -38,8 +37,7 @@ public class AttributeExtractor {
 		
 	}
 	
-	public Object extract(BeanContainer container, String attribute, RelationHolder holder) {
-		this.holder = holder;
+	public Object extract(BeanContainer container, String attribute) {
 		return extractAttribute(container, attribute);
 	}
 	
@@ -86,9 +84,11 @@ public class AttributeExtractor {
 	    	  String methodName = methodMatcher.group(2);
 	    	  String[] args = methodMatcher.group(3).split(",");
 	    	  Object object = container.getObject(objectName);
+	    	  holder.hold(object);
 	    	  result = invoke(object, methodName, TransferObjectType(container, args));
 	      } else {
 	          result = container.getObject(attribute);
+	          holder.hold(result);
 	      }
 	      return result;
     }
