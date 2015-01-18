@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.beatific.ddirori.attribute.AttributeExtractor;
 import org.beatific.ddirori.attribute.RelationHolder;
+import org.beatific.ddirori.maps.RelationMap;
+import org.beatific.ddirori.maps.impl.OneToNMap;
 import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.meta.MetaInfo;
-import org.beatific.ddirori.meta.map.RelationMap;
-import org.beatific.ddirori.meta.map.impl.OneToNMap;
 import org.beatific.ddirori.type.TagType;
 
 public abstract class BeanContainer {
@@ -69,17 +69,19 @@ public abstract class BeanContainer {
 	}
 	
 	private synchronized void registerBean(BeanDefinition definition, Object object) {
+		
+		if(container.containsKey(definition.getBeanName()) 
+			|| temp.containsKey(definition.getBeanName())) {
+			throw new BeanCreationException("Duplicate Bean Creation Exception : Bean[" + definition.getBeanName() + "]");
+		}
+		
         switch(definition.getTag()) {
 		
 		case BEAN :
-			if(container.containsKey(definition.getBeanName()))
-				throw new BeanCreationException("Duplicate Bean Creation Exception : Bean[" + definition.getBeanName() + "]");
 			container.put(definition.getBeanName(), object);
 			break;
 			
 		case TEMP :
-			if(temp.containsKey(definition.getBeanName()))
-				throw new BeanCreationException("Duplicate Temp Bean Creation Exception : Bean[" + definition.getBeanName() + "]");
 			temp.put(definition.getBeanName(), object);
 			break;
 			

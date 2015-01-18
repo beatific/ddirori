@@ -5,15 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.Parser;
-import org.beatific.ddirori.meta.map.RelationMap;
-import org.beatific.ddirori.meta.map.impl.OneToNMap;
+import org.beatific.ddirori.maps.RelationMap;
+import org.beatific.ddirori.maps.impl.DuplexFindMap;
+import org.beatific.ddirori.maps.impl.OneToNMap;
 
 public class MetaInfo {
 
 	private Integer level = 0;
 	private final Map<String, BeanDefinition> meta = new HashMap<String, BeanDefinition>();
-	private final RelationMap<Integer, BeanDefinition>orderedMeta = new OneToNMap<Integer, BeanDefinition>();
-	private final Map<String, BeanDefinition>valueMeta = new HashMap<String, BeanDefinition>();
+	private final OneToNMap<Integer, BeanDefinition>orderedMeta = new OneToNMap<Integer, BeanDefinition>();
+	private final DuplexFindMap<String, BeanDefinition>attributeMeta = new DuplexFindMap<String, BeanDefinition>();
 
 	public BeanDefinition getMeta(String tagName) throws BeanDefinitionNotFoundException {
 		BeanDefinition def = meta.get(tagName);
@@ -27,7 +28,7 @@ public class MetaInfo {
 	
 	public List<BeanDefinition> getMetaByLevel(Integer level) throws BeanDefinitionNotFoundException {
 		
-		List<BeanDefinition> defs = orderedMeta.getList(level);
+		List<BeanDefinition> defs = orderedMeta.findByKey(level);
 		if(defs == null || defs.size() == 0) throw new BeanDefinitionNotFoundException("This BeanDefinition is not found by Level[" + level + " ]");
 		return defs;
 	}
@@ -40,30 +41,38 @@ public class MetaInfo {
 	    Integer level = orderedMeta.size() + 1;
 	    this.level = level;
 	    loadLevelByMetaAnalysis(level);
-	    if(valueMeta.size() > 0) {
-	    	throw new ReferenceNotFoundException("This Reference Bean is not Found[" + Parser.getRelatedObjectNames(valueMeta.keySet().toArray(new String[0])[0]).get(0) + "]");
+	    if(attributeMeta.size() > 0) {
+	    	throw new ReferenceNotFoundException("This Reference Bean is not Found[" + Parser.getRelatedObjectNames(attributeMeta.keySet().toArray(new String[0])[0]).get(0) + "]");
 	    }
 	}
 	
 	public Integer getLevel() {
 		return level;
 	}
+	
+	public void setAttributeDefinition(String attribute, BeanDefinition definition) {
+		this.attributeMeta.put(attribute, definition);
+	}
 
 	protected void loadLevelByMetaAnalysis(Integer level) {
 		
-		for(String key : valueMeta.keySet()) {
-			boolean isExistByBelowLevel = true;
-			List<String>objectNames = Parser.getRelatedObjectNames(key);
-			for(String objectName : objectNames) {
-				if(!orderedMeta.containsValue(objectName)) {
-					isExistByBelowLevel = false;
-					break;
+		if(attributeMeta.size() == 0)return;
+		
+		for(BeanDefinition value : attributeMeta.valueSet()) {
+			for(String key : attributeMeta.findByValue(value)) {
+				boolean isExistByBelowLevel = true;
+				List<String>objectNames = Parser.getRelatedObjectNames(key);
+				for(String objectName : objectNames) {
+					if(!orderedMeta.containsValue(objectName)) {
+						isExistByBelowLevel = false;
+						break;
+					}
+				}
+				if(isExistByBelowLevel) {
+					orderedMeta.put(level, attributeMeta.get(key));
 				}
 			}
-			if(isExistByBelowLevel) {
-				orderedMeta.put(level, valueMeta.get(key));
-				valueMeta.remove(key);
-			}
+			attributeMeta.remove(value);
 		}
 		this.level = level;
 		loadLevelByMetaAnalysis(level+1);

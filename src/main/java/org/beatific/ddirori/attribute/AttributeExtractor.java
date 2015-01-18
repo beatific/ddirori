@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import org.beatific.ddirori.attribute.caster.AttributeTypeCaster;
 import org.beatific.ddirori.attribute.caster.DefinitionTypeCaster;
 import org.beatific.ddirori.bean.BeanContainer;
-import org.beatific.ddirori.meta.map.RelationMap;
 
 public class AttributeExtractor {
 

@@ -36,7 +36,7 @@ public class XmlApplicationContextTests {
 		}
 	}
 	
-//	@Test
+	@Test
 	public void testInit() {
 		context.init();
 		TestClass object = (TestClass)context.getBean("test");

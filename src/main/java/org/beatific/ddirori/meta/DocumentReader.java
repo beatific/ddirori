@@ -54,5 +54,6 @@ public class DocumentReader {
 	
 	protected void loadAttribute(Node element, BeanDefinition definition, MetaInfo meta) {
 		definition.getAttributes().put(element.getNodeName(), element.getNodeValue());
+		meta.setAttributeDefinition(element.getNodeValue(), definition);
 	}
 }

@@ -1,4 +1,4 @@
-package org.beatific.ddirori.meta.map.impl;
+package org.beatific.ddirori.maps;
 
 public class NotSupportedException extends RuntimeException {
 
