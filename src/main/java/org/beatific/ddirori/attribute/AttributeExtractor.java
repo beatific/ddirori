@@ -7,7 +7,7 @@ import org.beatific.ddirori.attribute.caster.AttributeTypeCaster;
 import org.beatific.ddirori.attribute.caster.DefinitionTypeCaster;
 import org.beatific.ddirori.bean.BeanContainer;
 
-public class AttributeExtractor {
+public abstract class AttributeExtractor {
 
 	private final static String REGEX_DEFINITION = "\\$\\[(\\w*)\\]";
 	private final static String REGEX_TYPE = "\\$(\\w+)\\[(\\w*)\\]";
@@ -73,6 +73,8 @@ public class AttributeExtractor {
 	    return buffer.toString();
 	}
     
+    protected abstract Object getObject(BeanContainer container, String objectName);
+    
     protected Object processMethod(BeanContainer container, String attribute) {
     	
 	    Object result = null;
@@ -82,11 +84,11 @@ public class AttributeExtractor {
 	    	  String objectName = methodMatcher.group(1);
 	    	  String methodName = methodMatcher.group(2);
 	    	  String[] args = methodMatcher.group(3).split(",");
-	    	  Object object = container.getObject(objectName);
+	    	  Object object = getObject(container, objectName);
 	    	  holder.hold(object);
 	    	  result = invoke(object, methodName, TransferObjectType(container, args));
 	      } else {
-	          result = container.getObject(attribute);
+	          result = getObject(container, attribute);
 	          holder.hold(result);
 	      }
 	      return result;

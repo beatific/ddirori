@@ -7,43 +7,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.beatific.ddirori.transaction.Transaction;
+import org.beatific.ddirori.maps.RelationMap;
 import org.springframework.util.Assert;
 
-public class OneToNMap<K, V> {
+public class OneToNMap<K,V> implements RelationMap<K,V>{
 
-	private Map<K, List<V>> forwardRelation = new HashMap<K, List<V>>();
-	private Map<V, K> reverseRelation = new HashMap<V, K>();
+	private Map<K, List<V>> relations = new HashMap<K, List<V>>();
+	private List<V> values = new ArrayList<V>();
 	
 	public int size() {
-		return forwardRelation.size();
+		return relations.size();
 	}
 
 	public boolean isEmpty() {
-		return forwardRelation.isEmpty();
+		return relations.isEmpty();
 	}
 
 	public boolean containsKey(Object key) {
-		return forwardRelation.containsKey(key);
+		return relations.containsKey(key);
 	}
 	
 	public boolean containsValue(Object value) {
-		return reverseRelation.containsKey(value);
+		return values.contains(value);
 	}
 	
 	public boolean contains(Object key, Object value) {
 		
-		if(forwardRelation.containsKey(key) && forwardRelation.get(key).contains(value)) return true;
+		if(relations.containsKey(key) && relations.get(key).contains(value)) return true;
 		return false;
 	}
 
-	public List<V> getValues(Object key) {
-		return forwardRelation.get(key);
+	public List<V> get(Object key) {
+		return relations.get(key);
 	}
 	
 	private List<V> getInstance(K key) {
-		List<V> list = forwardRelation.get(key);
-		if(list == null)list = new ArrayList<V>();
+		List<V> list = relations.get(key);
+		if(list == null){
+			list = new ArrayList<V>();
+			relations.put(key, list);
+		}
 		return list;
 	}
 	
@@ -55,21 +58,16 @@ public class OneToNMap<K, V> {
 			
 		List<V> list = getInstance(key);
 		list.add(value);
-		reverseRelation.put(value, key);
+		values.add(value);
 	}
 
-	public List<V> removeByKey(Object key) {
+	public List<V> remove(Object key) {
 		
-		Transaction.start(forwardRelation, reverseRelation);
-		try{
-			List<V> list = forwardRelation.remove(key);
-			for(V value : list) {
-				reverseRelation.remove(value);
-			}
-		} catch(Exception ex) {
-			Transaction.rollback();
+		List<V> list = relations.remove(key);
+		if(list == null)return list;
+		for(V value : list) {
+			values.remove(value);
 		}
-		Transaction.commit();
 		
 		return list;
 	}
@@ -82,14 +80,22 @@ public class OneToNMap<K, V> {
 	}
 
 	public void clear() {
-		forwardRelation.clear();
+		relations.clear();
+		values.clear();
 	}
 
 	public Set<K> keySet() {
-		return forwardRelation.keySet();
+		return relations.keySet();
 	}
 
 	public Collection<V> values() {
 		return values;
 	}
+
+	@Override
+	public String toString() {
+		return "OneToNMap [" + relations + "]";
+	}
+	
+	
 }

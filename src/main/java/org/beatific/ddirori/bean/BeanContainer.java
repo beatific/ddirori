@@ -1,6 +1,7 @@
 package org.beatific.ddirori.bean;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.AttributeExtractor;
@@ -23,7 +24,14 @@ public abstract class BeanContainer {
 	
 	public BeanContainer(String basePackage) {
 		this.basePackage = basePackage;
-		this.extractor = new AttributeExtractor(holder, basePackage);
+		this.extractor = new AttributeExtractor(holder, basePackage) {
+
+			@Override
+			protected Object getObject(BeanContainer container, String objectName) {
+				return container.getObject(objectName);
+			}
+			
+		};
 	}
 
 	protected void initContainer() throws BeanDefinitionNotFoundException {
@@ -35,7 +43,7 @@ public abstract class BeanContainer {
 		reloadRefreshableBean(getRelations(object));
 	}
 	
-	private BeanDefinition getRelations(Object object) {
+	private List<BeanDefinition> getRelations(Object object) {
 		synchronized(relations) {
 		    return relations.get(object);
 		}
@@ -44,15 +52,15 @@ public abstract class BeanContainer {
 	protected abstract MetaInfo buildMetaInfo();
 	
 	private void init(MetaInfo meta) throws BeanDefinitionNotFoundException {
-		for(int i = 0 ; i < meta.getLevel(); i++)
-			for(BeanDefinition definition : meta.getMetaByLevel(i))
+		for(int i = 0 ; i < meta.getLevel(); i++) 
+			for(BeanDefinition definition : meta.getMetaByLevel(i+1))
 				load(definition);
 	}
 	
 	private Map<String, Object> loadAttributes(Map<String, String> attributes) {
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
-		for(String key : map.keySet()) {
+		for(String key : attributes.keySet()) {
 			String value = attributes.get(key);
 			map.put(key, extractor.extract(this, value));
 		}
@@ -98,12 +106,15 @@ public abstract class BeanContainer {
 		chainRelation(definition);
 	}
 	
-	private void reloadRefreshableBean(BeanDefinition definition) {
-		if(definition.getTag() != TagType.TEMP)return;
-		loadWithoutRelation(definition);
+	private void reloadRefreshableBean(List<BeanDefinition> definitions) {
+		for(BeanDefinition definition : definitions) {
+			if(definition.getTag() != TagType.TEMP)return;
+			loadWithoutRelation(definition);
+		}
 	}
 	
     private void loadWithoutRelation(BeanDefinition definition) {
+    	
 		Object object = definition.getConstructor().create(definition.getParentElementDefinition(), definition.getChildElementDeifinitions(), loadAttributes(definition.getAttributes()));
 		registerBean(definition, object);
 	}
@@ -112,7 +123,7 @@ public abstract class BeanContainer {
 		return container.get(beanName);
 	}
 	
-	public synchronized Object getObject(String objectName) {
+	private synchronized Object getObject(String objectName) {
 		Object object = getBean(objectName);
 		if(object == null) {
 			object = temp.get(objectName);

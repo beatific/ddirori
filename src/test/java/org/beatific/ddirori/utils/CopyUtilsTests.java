@@ -7,6 +7,6 @@ public class CopyUtilsTests {
 	@Test
 	public void testCopy(Object object){
 		CopyUtils copy = new CopyUtils();
-		copy.copy(object)
+		copy.copy(object);
 	}
 }

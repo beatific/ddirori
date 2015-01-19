@@ -8,7 +8,6 @@ public class Transaction {
 	public Map<Object, Object> copys = new HashMap<Object, Object>();
 	public void start(Object... objects) {
 		for(Object object : objects) {
-			CopyUtils
 		}
 	}
 }

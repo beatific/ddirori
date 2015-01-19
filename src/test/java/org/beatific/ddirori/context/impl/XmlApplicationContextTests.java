@@ -30,9 +30,10 @@ public class XmlApplicationContextTests {
 	public void testBuildMetaInfo() {
 		MetaInfo meta = context.buildMetaInfo();
 		try {
-			assertEquals("ddirori", meta.getMeta("test").getParentElementDefinition().getBeanName());
+			assertEquals("test", meta.getMeta("test").getBeanName());
+			assertEquals("test2", meta.getMeta("test2").getBeanName());
 		} catch (BeanDefinitionNotFoundException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 	
@@ -40,7 +41,9 @@ public class XmlApplicationContextTests {
 	public void testInit() {
 		context.init();
 		TestClass object = (TestClass)context.getBean("test");
-		System.out.println(object.getText());
+		
+		assertEquals("test1", object.getAttribute());
+		assertEquals("test2",object.getTest2().getAttribute2());
 	}
 	
 }

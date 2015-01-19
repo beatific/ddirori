@@ -1,18 +1,27 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    targetNamespace="http://www.beatific.org/schema/ddirori-test"
-    xmlns:ddirori="http://www.beatific.org/schema/ddirori-test">
-    
-  <xs:element name="ddirori">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="test" type="ddirori:test" minOccurs="1" maxOccurs="unbounded"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  
-  <xs:complexType name="test">
-    <xs:attribute name="text" type="xs:string" use="required" />
-  </xs:complexType>
+	targetNamespace="http://www.beatific.org/schema/ddirori-test"
+	xmlns:ddirori="http://www.beatific.org/schema/ddirori-test">
+
+	<xs:element name="ddirori">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="test" type="ddirori:test" minOccurs="1"
+					maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="test">
+		<xs:sequence>
+			<xs:element name="test2" type="ddirori:test2" minOccurs="1"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="attribute" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="test2">
+		<xs:attribute name="attribute2" type="xs:string" use="required" />
+	</xs:complexType>
 
 </xs:schema>

@@ -76,6 +76,6 @@ public class BeanDefinition {
 	void setAttribute(String key, String value) {
 		this.attributes.put(key, value);
 	}
-	
+
 	
 }

@@ -8,12 +8,14 @@ import org.beatific.ddirori.bean.annotation.Action;
 import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.type.TagType;
 
-//@Action(tag="ddirori", type=TagType.ATTRIBUTE)
-public class DDiroriAction implements Constructor<TestClass>{
+@Action(tag="test2", type=TagType.TEMP)
+public class Test2Action implements Constructor<Test2Class>{
 
-	public TestClass create(BeanDefinition parent, List<BeanDefinition> children,
+	public Test2Class create(BeanDefinition parent, List<BeanDefinition> children,
 			Map<String, Object> attributes) {
-		return new TestClass();
+		Test2Class test =  new Test2Class();
+		test.setAttribute2((String)attributes.get("attribute2"));
+		return test;
 	}
 
 }

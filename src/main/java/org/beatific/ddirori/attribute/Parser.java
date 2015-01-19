@@ -18,6 +18,7 @@ public class Parser {
 		List<String> objectNames = new ArrayList<String>();
 		Matcher matcher = getMatcher(str, REGEX_OBJECT);
 		while (matcher.find()) {
+			
 			String attribute = matcher.group(1);
 			Matcher methodMatcher = getMatcher(attribute, REGEX_METHOD_ARGS);
 		      
