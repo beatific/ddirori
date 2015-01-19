@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.AttributeExtractor;
-import org.beatific.ddirori.attribute.RelationHolder;
 import org.beatific.ddirori.maps.RelationMap;
 import org.beatific.ddirori.maps.impl.OneToNMap;
 import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.meta.MetaInfo;
-import org.beatific.ddirori.type.TagType;
 
 public abstract class BeanContainer {
 
@@ -19,12 +17,12 @@ public abstract class BeanContainer {
 	private final Map<String, Object> temp = new HashMap<String, Object>();
 	private final RelationMap<Object, BeanDefinition> relations = new OneToNMap<Object, BeanDefinition>();
 	private final AttributeExtractor extractor;
-	private final RelationHolder holder = new RelationHolder();
+//	private final RelationHolder holder = new RelationHolder();
 	protected String basePackage;
 	
 	public BeanContainer(String basePackage) {
 		this.basePackage = basePackage;
-		this.extractor = new AttributeExtractor(holder, basePackage) {
+		this.extractor = new AttributeExtractor(basePackage) {
 
 			@Override
 			protected Object getObject(BeanContainer container, String objectName) {
@@ -37,10 +35,6 @@ public abstract class BeanContainer {
 	protected void initContainer() throws BeanDefinitionNotFoundException {
 		MetaInfo meta = buildMetaInfo();
 		init(meta);
-	}
-	
-	public void refresh(Object object) {
-		reloadRefreshableBean(getRelations(object));
 	}
 	
 	private List<BeanDefinition> getRelations(Object object) {
@@ -67,14 +61,14 @@ public abstract class BeanContainer {
 		return map;
 	}
 	
-	private void chainRelation(BeanDefinition definition){
-		
-		for(Object holdedObject : this.holder.getHoldedObjects())
-			synchronized(relations) {
-		        this.relations.put(holdedObject, definition);
-			}
-		this.holder.release();
-	}
+//	private void chainRelation(BeanDefinition definition){
+//		
+//		for(Object holdedObject : this.holder.getHoldedObjects())
+//			synchronized(relations) {
+//		        this.relations.put(holdedObject, definition);
+//			}
+//		this.holder.release();
+//	}
 	
 	private synchronized void registerBean(BeanDefinition definition, Object object) {
 		
@@ -103,14 +97,7 @@ public abstract class BeanContainer {
 	private void load(BeanDefinition definition) {
 		
 		loadWithoutRelation(definition);
-		chainRelation(definition);
-	}
-	
-	private void reloadRefreshableBean(List<BeanDefinition> definitions) {
-		for(BeanDefinition definition : definitions) {
-			if(definition.getTag() != TagType.TEMP)return;
-			loadWithoutRelation(definition);
-		}
+//		chainRelation(definition);
 	}
 	
     private void loadWithoutRelation(BeanDefinition definition) {
