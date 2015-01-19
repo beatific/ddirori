@@ -1,12 +1,9 @@
 package org.beatific.ddirori.bean;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.AttributeExtractor;
-import org.beatific.ddirori.maps.RelationMap;
-import org.beatific.ddirori.maps.impl.OneToNMap;
 import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.meta.MetaInfo;
@@ -15,9 +12,7 @@ public abstract class BeanContainer {
 
 	private final Map<String, Object> container = new HashMap<String, Object>();
 	private final Map<String, Object> temp = new HashMap<String, Object>();
-	private final RelationMap<Object, BeanDefinition> relations = new OneToNMap<Object, BeanDefinition>();
 	private final AttributeExtractor extractor;
-//	private final RelationHolder holder = new RelationHolder();
 	protected String basePackage;
 	
 	public BeanContainer(String basePackage) {
@@ -37,12 +32,6 @@ public abstract class BeanContainer {
 		init(meta);
 	}
 	
-	private List<BeanDefinition> getRelations(Object object) {
-		synchronized(relations) {
-		    return relations.get(object);
-		}
-	}
-	
 	protected abstract MetaInfo buildMetaInfo();
 	
 	private void init(MetaInfo meta) throws BeanDefinitionNotFoundException {
@@ -60,15 +49,6 @@ public abstract class BeanContainer {
 		}
 		return map;
 	}
-	
-//	private void chainRelation(BeanDefinition definition){
-//		
-//		for(Object holdedObject : this.holder.getHoldedObjects())
-//			synchronized(relations) {
-//		        this.relations.put(holdedObject, definition);
-//			}
-//		this.holder.release();
-//	}
 	
 	private synchronized void registerBean(BeanDefinition definition, Object object) {
 		
@@ -97,7 +77,6 @@ public abstract class BeanContainer {
 	private void load(BeanDefinition definition) {
 		
 		loadWithoutRelation(definition);
-//		chainRelation(definition);
 	}
 	
     private void loadWithoutRelation(BeanDefinition definition) {

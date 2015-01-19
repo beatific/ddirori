@@ -16,14 +16,12 @@ public abstract class AttributeExtractor {
 	private final static String REGEX_STRING = "\\$S\\{(\\w*)\\}";
 	private AttributeTypeCaster typeCaster = null;
 	private DefinitionTypeCaster definitionCaster = null;
-//	private final RelationHolder holder;
 	
 	public AttributeExtractor(String basePackage) {
 		this.typeCaster = new AttributeTypeCaster(basePackage);
 		this.typeCaster.init();
 		this.definitionCaster = new DefinitionTypeCaster(basePackage);
 		this.definitionCaster.init();
-//		this.holder = holder;
 	}
 	
 	protected Object processReservedWord(String word) {
@@ -85,11 +83,9 @@ public abstract class AttributeExtractor {
 	    	  String methodName = methodMatcher.group(2);
 	    	  String[] args = methodMatcher.group(3).split(",");
 	    	  Object object = getObject(container, objectName);
-//	    	  holder.hold(object);
 	    	  result = invoke(object, methodName, TransferObjectType(container, args));
 	      } else {
 	          result = getObject(container, attribute);
-//	          holder.hold(result);
 	      }
 	      return result;
     }
