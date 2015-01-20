@@ -21,8 +21,8 @@ public class DDiroriListener implements ServletContextListener {
 		if(sc.getAttribute(ROOT_APPLICATION_CONTEXT) != null) {
 			throw new IllegalStateException("Can't initialize duplicated application context.");
 		}
-		ApplicationContext context = createWebApplicationContext(sc);
-		context.init();
+//		ApplicationContext context = createWebApplicationContext(sc);
+//		context.init();
 	}
 
 	private org.springframework.context.ApplicationContext getSpringApplicationContext(ServletContext sc) {
@@ -43,19 +43,19 @@ public class DDiroriListener implements ServletContextListener {
 		return (org.springframework.context.ApplicationContext)sc.getAttribute(SPRING_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
 	}
 	
-	protected ApplicationContext createWebApplicationContext(ServletContext sc){
+//	protected ApplicationContext createWebApplicationContext(ServletContext sc){
 
-		String basePackage = sc.getInitParameter(BASE_PACKAGE);
-		
-		XmlApplicationContext context  = new XmlApplicationContext(basePackage, getSpringApplicationContext(sc));
-		
-		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION);
-		if (configLocationParam != null) {
-			context.setFilePath(configLocationParam);
-		}
-		sc.setAttribute(ROOT_APPLICATION_CONTEXT, context);
-		return context;
-	}
+//		String basePackage = sc.getInitParameter(BASE_PACKAGE);
+//		
+//		XmlApplicationContext context  = new XmlApplicationContext(basePackage, getSpringApplicationContext(sc));
+//		
+//		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION);
+//		if (configLocationParam != null) {
+//			context.setFilePath(configLocationParam);
+//		}
+//		sc.setAttribute(ROOT_APPLICATION_CONTEXT, context);
+//		return context;
+//	}
 	
 	public void contextDestroyed(ServletContextEvent event) {
 		ServletContext sc = event.getServletContext();

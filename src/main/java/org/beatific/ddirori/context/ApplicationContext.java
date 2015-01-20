@@ -10,11 +10,6 @@ public abstract class ApplicationContext extends BeanLoader {
 		super(basePackage);
 	}
 
-	public ApplicationContext(String basePackage, org.springframework.context.ApplicationContext context) {
-		
-		super(basePackage, context);
-	}
-	
 	public void init() {
 		try {
 			initContainer();

@@ -33,7 +33,7 @@ public class XmlApplicationContextTests {
 			assertEquals("test", meta.getMeta("test").getBeanName());
 			assertEquals("test2", meta.getMeta("test2").getBeanName());
 		} catch (BeanDefinitionNotFoundException e) {
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	

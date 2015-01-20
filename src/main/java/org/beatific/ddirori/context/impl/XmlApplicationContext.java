@@ -17,7 +17,7 @@ public class XmlApplicationContext extends ApplicationContext {
 
 	private boolean validation = false;
 	private boolean namespaceAware = true;
-	private String filePath;
+	private String filePath = "ddiroricontext.xml";
 	
 	public XmlApplicationContext() {
 	    super(null);	
@@ -25,10 +25,6 @@ public class XmlApplicationContext extends ApplicationContext {
 	
 	public XmlApplicationContext(String basePackage) {
 	    super(basePackage);	
-	}
-	
-	public XmlApplicationContext(String basePackage, org.springframework.context.ApplicationContext context) {
-	    super(basePackage, context);	
 	}
 	
 	public void setValidation(boolean validation) {
