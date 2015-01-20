@@ -1,24 +1,32 @@
 package org.beatific.ddirori.context;
 
-import org.beatific.ddirori.bean.BeanContainer;
+import org.beatific.ddirori.bean.BeanLoader;
+import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 
-public abstract class ApplicationContext extends BeanContainer {
+public abstract class ApplicationContext extends BeanLoader {
 
-	public ApplicationContext(String basePackage) {
+    public ApplicationContext(String basePackage) {
+		
 		super(basePackage);
+	}
+
+	public ApplicationContext(String basePackage, org.springframework.context.ApplicationContext context) {
+		
+		super(basePackage, context);
 	}
 	
 	public void init() {
-		initContext();
+		try {
+			initContainer();
+		} catch (BeanDefinitionNotFoundException e) {
+			throw new ContextInitializeException("This Context is failed to initialize.");
+		}
 		ApplicationContextUtils.setApplicationContext(this);
 	}
 	
-	protected abstract void initContext();
-	
 	public void destroy() {
 		ApplicationContextUtils.setApplicationContext(null);
-		destoryContext();
+		destory();
 	}
-	
-	protected abstract void destoryContext();
+
 }

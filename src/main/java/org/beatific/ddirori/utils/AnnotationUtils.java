@@ -33,31 +33,37 @@ public class AnnotationUtils {
 	}
 	
 	public static List<Class<?>> findClassByAnnotation(Class<?> annotationType) {
-		return findClassByAnnotation(null, annotationType);
+		return findClassByAnnotation(new String(), annotationType);
 	}
+	
 	public static List<Class<?>> findClassByAnnotation(String basePackage, Class<?> annotationType) {
+		return findClassByAnnotation(new String[]{basePackage}, annotationType);
+	}
+	
+	public static List<Class<?>> findClassByAnnotation(String[] basePackages, Class<?> annotationType) {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
-		try {
-			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +resolveBasePackage(basePackage) + "/" + DEFAULT_RESOURCE_PATTERN;
-			Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
-			for (Resource resource : resources) {
-				if (resource.isReadable()) {
-					try {
-						MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
-						Class<?> clazz = getClass(metadataReader);
-						if (isClassWithAnnotation(clazz, annotationType)) {
-							classes.add(clazz);
+		for(String basePackage : basePackages)
+			try {
+				String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +resolveBasePackage(basePackage) + "/" + DEFAULT_RESOURCE_PATTERN;
+				Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
+				for (Resource resource : resources) {
+					if (resource.isReadable()) {
+						try {
+							MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
+							Class<?> clazz = getClass(metadataReader);
+							if (isClassWithAnnotation(clazz, annotationType)) {
+								classes.add(clazz);
+							}
+						}catch (Throwable ex) {
+							throw new BeanDefinitionStoreException(
+									"Failed to read class: " + resource, ex);
 						}
-					}catch (Throwable ex) {
-						throw new BeanDefinitionStoreException(
-								"Failed to read class: " + resource, ex);
 					}
 				}
 			}
-		}
-		catch (IOException ex) {
-			throw new BeanDefinitionStoreException("I/O failure during classpath scanning", ex);
-		}
+			catch (IOException ex) {
+				throw new BeanDefinitionStoreException("I/O failure during classpath scanning", ex);
+			}
 		return classes;
 	}
 	

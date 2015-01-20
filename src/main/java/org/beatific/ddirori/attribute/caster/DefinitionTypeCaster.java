@@ -11,9 +11,9 @@ import org.beatific.ddirori.utils.AnnotationUtils;
 public class DefinitionTypeCaster {
 
 	private final Map<String, DefinitionTypeResolver<?>> resolvers = new HashMap<String, DefinitionTypeResolver<?>>();
-	private final String basePackage;
+	private final String[] basePackage;
 	
-	public DefinitionTypeCaster(String basePackage) {
+	public DefinitionTypeCaster(String[] basePackage) {
 		this.basePackage = basePackage;
 	}
 	

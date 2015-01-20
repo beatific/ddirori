@@ -17,7 +17,7 @@ public abstract class AttributeExtractor {
 	private AttributeTypeCaster typeCaster = null;
 	private DefinitionTypeCaster definitionCaster = null;
 	
-	public AttributeExtractor(String basePackage) {
+	public AttributeExtractor(String[] basePackage) {
 		this.typeCaster = new AttributeTypeCaster(basePackage);
 		this.typeCaster.init();
 		this.definitionCaster = new DefinitionTypeCaster(basePackage);

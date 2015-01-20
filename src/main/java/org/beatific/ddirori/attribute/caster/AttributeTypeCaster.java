@@ -11,9 +11,9 @@ import org.beatific.ddirori.utils.AnnotationUtils;
 public class AttributeTypeCaster {
 
 	private final Map<String, AttributeTypeResolver<?>> resolvers = new HashMap<String, AttributeTypeResolver<?>>();
-	private final String basePackage;
+	private final String[] basePackage;
 	
-	public AttributeTypeCaster(String basePackage) {
+	public AttributeTypeCaster(String[] basePackage) {
 		this.basePackage = basePackage;
 	}
 	

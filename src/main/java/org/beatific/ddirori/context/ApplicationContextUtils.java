@@ -1,5 +1,6 @@
 package org.beatific.ddirori.context;
 
+
 public class ApplicationContextUtils {
 
 	private static ApplicationContext context;
