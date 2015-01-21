@@ -7,13 +7,13 @@ package org.beatific.ddirori.repository;
  * @author beatificho
  *
  */
-public interface Repository<O, S> {
+public interface Repository<O, S extends Enum<?>> {
 
 	public S getState();
 	
 	public int save(Object state, Object object);
 	
-	public O load(Object state, Object... key);
+	public O load(Object state, Object object);
 	
 	public int change(Object state, Object object);
 	

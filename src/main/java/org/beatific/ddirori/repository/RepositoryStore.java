@@ -43,7 +43,7 @@ public class RepositoryStore {
 	public Object load(Object object) {
 
 		Repository<?, ?> repository = getRepository(object);
-		return repository.load(object);
+		return repository.load(repository.getState(), object);
 	}
 
 	public int change(Object object) {
