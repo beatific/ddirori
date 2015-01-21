@@ -2,7 +2,7 @@ package org.beatific.ddirori.context.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
+import org.beatific.ddirori.bean.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.meta.MetaInfo;
 import org.junit.Before;
 import org.junit.Test;

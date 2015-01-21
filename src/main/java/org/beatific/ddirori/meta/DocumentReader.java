@@ -1,5 +1,7 @@
 package org.beatific.ddirori.meta;
 
+import org.beatific.ddirori.bean.BeanDefinition;
+import org.beatific.ddirori.bean.BeanDefinitionNotFoundException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -55,7 +57,7 @@ public class DocumentReader {
 		NamedNodeMap nodeAttributes = element.getAttributes();
 		for(int i =0; i < nodeAttributes.getLength(); i++) {
 			Node attribute = nodeAttributes.item(i);
-			definition.getAttributes().put(attribute.getNodeName(), attribute.getNodeValue());
+			definition.getStringAttributes().put(attribute.getNodeName(), attribute.getNodeValue());
 			meta.setAttributeDefinition(definition, attribute.getNodeValue());
 		}
 	}

@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.AttributeExtractor;
+import org.beatific.ddirori.bean.BeanDefinition.AttributeLoader;
 import org.beatific.ddirori.bean.impl.DDiroriBeanContainer;
 import org.beatific.ddirori.bean.impl.SpringBeanContainer;
-import org.beatific.ddirori.meta.BeanDefinition;
-import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.meta.MetaInfo;
+import org.beatific.ddirori.repository.RepositoryStore;
 import org.springframework.context.ApplicationContext;
 
 public abstract class BeanLoader {
@@ -16,6 +16,7 @@ public abstract class BeanLoader {
 	private final AttributeExtractor extractor;
 	protected final String[] basePackage;
 	private final BeanContainer container;
+	private static final String STORE_NAME = "store";
 	
     public BeanLoader(String basePackage) {
 		
@@ -35,6 +36,17 @@ public abstract class BeanLoader {
 			}
 			
 		};
+		
+		loadStore();
+		
+	}
+	
+	private void loadStore() {
+        RepositoryStore store = new RepositoryStore(basePackage);
+		
+		store.load();
+		
+		this.container.registerBean(STORE_NAME, store);		
 	}
 
 	private BeanContainer getBeanContainer() {
@@ -52,17 +64,6 @@ public abstract class BeanLoader {
 		for(int i = 0 ; i < meta.getLevel(); i++) 
 			for(BeanDefinition definition : meta.getMetaByLevel(i+1))
 				load(definition);
-	}
-	
-	
-	private Map<String, Object> loadAttributes(Map<String, String> attributes) {
-
-		Map<String, Object> map = new HashMap<String, Object>();
-		for(String key : attributes.keySet()) {
-			String value = attributes.get(key);
-			map.put(key, extractor.extract(getBeanContainer(), value));
-		}
-		return map;
 	}
 	
     protected void registerObject(BeanDefinition definition, Object object) {
@@ -90,14 +91,33 @@ public abstract class BeanLoader {
 		loadWithoutRelation(definition);
 	}
 	
-    private void loadWithoutRelation(BeanDefinition definition) {
+	private void loadWithoutRelation(BeanDefinition definition) {
     	
-		Object object = definition.getConstructor().create(definition.getParentElementDefinition(), definition.getChildElementDeifinitions(), loadAttributes(definition.getAttributes()));
+    	definition.loadAttributes(new AttributeLoader(){
+
+			@Override
+			public Map<String, Object> load(
+					Map<String, String> attributes) {
+				Map<String, Object> map = new HashMap<String, Object>();
+				for(String key : attributes.keySet()) {
+					String value = attributes.get(key);
+					map.put(key, extractor.extract(getBeanContainer(), value));
+				}
+				return map;
+			}
+	
+        });
+        
+		Object object = definition.getConstructor().create(definition);
 		registerObject(definition, object);
 	}
 	
 	public Object getBean(String beanName) {
 		return getBeanContainer().getBean(beanName);
+	}
+	
+	public RepositoryStore getStore() {
+		return (RepositoryStore)getBean(STORE_NAME);
 	}
 	
 	protected synchronized void destory() {

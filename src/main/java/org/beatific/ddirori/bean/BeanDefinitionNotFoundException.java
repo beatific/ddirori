@@ -1,4 +1,4 @@
-package org.beatific.ddirori.meta;
+package org.beatific.ddirori.bean;
 
 public class BeanDefinitionNotFoundException extends Exception{
 

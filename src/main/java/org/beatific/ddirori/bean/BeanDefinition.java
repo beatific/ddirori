@@ -1,11 +1,10 @@
-package org.beatific.ddirori.meta;
+package org.beatific.ddirori.bean;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.beatific.ddirori.bean.Constructor;
 import org.beatific.ddirori.type.TagType;
 
 public class BeanDefinition {
@@ -19,7 +18,8 @@ public class BeanDefinition {
 	
 	private BeanDefinition parentElementDefinition;
 	private final List<BeanDefinition> childElementDeifinitions = new ArrayList<BeanDefinition>(); 
-	private final Map<String, String>attributes = new LinkedHashMap<String, String>();
+	private final Map<String, String>stringAttributes = new LinkedHashMap<String, String>();
+	private Map<String, Object>attributes = null;
 	
 	public BeanDefinition(org.beatific.ddirori.bean.annotation.Action annotation, Constructor constructor) {
 		this.tagType = annotation.type();
@@ -48,20 +48,20 @@ public class BeanDefinition {
 	}
 	
 	public String getBeanName() {
-		String id = attributes.get(BEAN_NAME_IDENTIFIER);
+		String id = stringAttributes.get(BEAN_NAME_IDENTIFIER);
 		if(id == null) {
 			id = tagName;
 		}
 		return id;
 	}
 	
-	public BeanDefinition getParentElementDefinition() {
+	public BeanDefinition parent() {
 		return parentElementDefinition;
 	}
 	public void setParentElementDefinition(BeanDefinition parentElementDefinition) {
 		this.parentElementDefinition = parentElementDefinition;
 	}
-	public List<BeanDefinition> getChildElementDeifinitions() {
+	public List<BeanDefinition> children() {
 		return childElementDeifinitions;
 	}
 	public void addChildElementDeifinition(
@@ -69,13 +69,25 @@ public class BeanDefinition {
 		this.childElementDeifinitions.add(childElementDeifinition);
 	}
 	
-	public Map<String, String> getAttributes() {
+	public Map<String, String> getStringAttributes() {
+		return stringAttributes;
+	}
+	
+	void setStringAttribute(String key, String value) {
+		this.stringAttributes.put(key, value);
+	}
+	
+	public Map<String, Object> attributes() {
 		return attributes;
 	}
 	
-	void setAttribute(String key, String value) {
-		this.attributes.put(key, value);
-	}
+	Map<String, Object> loadAttributes(AttributeLoader loader) {
 
+		this.attributes = loader.load(stringAttributes);
+		return attributes();
+	}
 	
+	static abstract class AttributeLoader {
+		public abstract Map<String, Object> load(Map<String, String> attributes);
+	}
 }

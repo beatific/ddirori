@@ -1,21 +1,17 @@
 package org.beatific.ddirori.context.impl;
 
-import java.util.List;
-import java.util.Map;
-
+import org.beatific.ddirori.bean.BeanDefinition;
 import org.beatific.ddirori.bean.Constructor;
 import org.beatific.ddirori.bean.annotation.Action;
-import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.type.TagType;
 
 @Action(tag="test", type=TagType.BEAN)
 public class TestAction implements Constructor<TestClass>{
 
-	public TestClass create(BeanDefinition parent, List<BeanDefinition> children,
-			Map<String, Object> attributes) {
+	public TestClass create(BeanDefinition definition) {
 		TestClass test =  new TestClass();
-		test.setAttribute((String)attributes.get("attribute"));
-		test.setTest2((Test2Class)attributes.get("test2"));
+		test.setAttribute((String)definition.attributes().get("attribute"));
+		test.setTest2((Test2Class)definition.attributes().get("test2"));
 		return test;
 	}
 

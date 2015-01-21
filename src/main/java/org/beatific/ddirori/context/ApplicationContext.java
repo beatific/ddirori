@@ -1,7 +1,7 @@
 package org.beatific.ddirori.context;
 
+import org.beatific.ddirori.bean.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.bean.BeanLoader;
-import org.beatific.ddirori.meta.BeanDefinitionNotFoundException;
 
 public abstract class ApplicationContext extends BeanLoader {
 

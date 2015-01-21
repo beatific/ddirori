@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.beatific.ddirori.attribute.Parser;
+import org.beatific.ddirori.bean.BeanDefinition;
+import org.beatific.ddirori.bean.BeanDefinitionNotFoundException;
 import org.beatific.ddirori.maps.impl.OneToNMap;
 
 public class MetaInfo {

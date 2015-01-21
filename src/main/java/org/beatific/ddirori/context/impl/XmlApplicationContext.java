@@ -1,10 +1,10 @@
 package org.beatific.ddirori.context.impl;
 
 import org.beatific.ddirori.bean.BeanCreationException;
+import org.beatific.ddirori.bean.BeanDefinition;
 import org.beatific.ddirori.bean.Constructor;
 import org.beatific.ddirori.bean.annotation.Action;
 import org.beatific.ddirori.context.ApplicationContext;
-import org.beatific.ddirori.meta.BeanDefinition;
 import org.beatific.ddirori.meta.DocumentReader;
 import org.beatific.ddirori.meta.MetaInfo;
 import org.beatific.ddirori.utils.AnnotationUtils;
