@@ -16,12 +16,18 @@ public abstract class AttributeExtractor {
 	private final static String REGEX_STRING = "\\$S\\{(\\w*)\\}";
 	private AttributeTypeCaster typeCaster = null;
 	private DefinitionTypeCaster definitionCaster = null;
+	private boolean isUseDDiroriExpression = false;
 	
 	public AttributeExtractor(String[] basePackage) {
+		this(basePackage, false);
+	}
+	
+	public AttributeExtractor(String[] basePackage, boolean isUseDDiroriExpression) {
 		this.typeCaster = new AttributeTypeCaster(basePackage);
 		this.typeCaster.init();
 		this.definitionCaster = new DefinitionTypeCaster(basePackage);
 		this.definitionCaster.init();
+		this.isUseDDiroriExpression = isUseDDiroriExpression;
 	}
 	
 	protected Object processReservedWord(String word) {
@@ -40,6 +46,7 @@ public abstract class AttributeExtractor {
 	
     protected Object extractAttribute(BeanContainer container, String attribute) {
 		
+    	if(this.isUseDDiroriExpression == false)  return attribute;
     	Matcher objectMatcher = Parser.getMatcher(attribute, REGEX_OBJECT);
     	Matcher stringMatcher = Parser.getMatcher(attribute, REGEX_STRING);
 		Matcher definitionMatcher = Parser.getMatcher(attribute, REGEX_DEFINITION);

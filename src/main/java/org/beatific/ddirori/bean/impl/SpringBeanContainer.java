@@ -15,7 +15,6 @@ public class SpringBeanContainer extends AbstractBeanContainerWithTemp {
 	
 	@Override
 	protected void registerBean(String beanName, Object bean) {
-		System.out.println("beanName:"+beanName + "],bean[" + bean + "]");
 		registry.registerSingleton(beanName, bean);
 	}
 

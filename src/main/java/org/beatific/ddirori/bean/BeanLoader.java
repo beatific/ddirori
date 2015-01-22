@@ -36,17 +36,14 @@ public abstract class BeanLoader {
 			}
 			
 		};
-		
 		loadStore();
 		
 	}
 	
 	private void loadStore() {
         RepositoryStore store = new RepositoryStore(basePackage);
-		
 		store.load();
-		
-		this.container.registerBean(STORE_NAME, store);		
+		this.container.registerBean(STORE_NAME, store);
 	}
 
 	private BeanContainer getBeanContainer() {
@@ -61,7 +58,7 @@ public abstract class BeanLoader {
 	protected abstract MetaInfo buildMetaInfo();
 	
 	private void init(MetaInfo meta) throws BeanDefinitionNotFoundException {
-		for(int i = 0 ; i < meta.getLevel(); i++) 
+		for(int i = 0 ; i < meta.getLevel(); i++)
 			for(BeanDefinition definition : meta.getMetaByLevel(i+1))
 				load(definition);
 	}
@@ -107,7 +104,7 @@ public abstract class BeanLoader {
 			}
 	
         });
-        
+    	System.out.println(definition.getBeanName());
 		Object object = definition.getConstructor().create(definition);
 		registerObject(definition, object);
 	}

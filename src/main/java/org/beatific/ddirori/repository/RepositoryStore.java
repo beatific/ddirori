@@ -20,8 +20,9 @@ public class RepositoryStore {
 	}
 
 	private synchronized void addRepository(Repository<?, ?> repository) {
-		Class<?> clazz = GenericTypeResolver.resolveTypeArgument(
+		Class<?>[] classes = GenericTypeResolver.resolveTypeArguments(
 				repository.getClass(), Repository.class);
+		Class<?> clazz = classes[0];
 		if (clazz == null)
 			throw new RepositoryTypeNotFoundException(
 					"Can't find the generic type of repository["
@@ -34,10 +35,10 @@ public class RepositoryStore {
 		store.put(clazz, repository);
 	}
 
-	public int save(Object object) {
+	public void save(Object object) {
 
 		Repository<?, ?> repository = getRepository(object);
-		return repository.save(repository.getState(), object);
+		repository.save(repository.getState(), object);
 	}
 
 	public Object load(Object object) {
@@ -46,21 +47,22 @@ public class RepositoryStore {
 		return repository.load(repository.getState(), object);
 	}
 
-	public int change(Object object) {
+	public void change(Object object) {
 
 		Repository<?, ?> repository = getRepository(object);
-		return repository.change(repository.getState(), object);
+		repository.change(repository.getState(), object);
 	}
 
-	public int remove(Object object) {
+	public void remove(Object object) {
 
 		Repository<?, ?> repository = getRepository(object);
-		return repository.remove(repository.getState(), object);
+		repository.remove(repository.getState(), object);
 	}
 
 	public void load() {
 		for (Class<?> clazz : AnnotationUtils.findClassByAnnotation(
 				this.basePackage, Store.class)) {
+			
 			try {
 				Object repository = clazz.newInstance();
 				if (repository instanceof Repository)
@@ -70,14 +72,16 @@ public class RepositoryStore {
 							"Only repository instance can attach Store annotation["
 									+ clazz.getName() + "]");
 			} catch (InstantiationException e) {
+				e.printStackTrace();
 				throw new RepositoryLoadException(
 						"Repository instantiation is not failed["
 								+ clazz.getName() + "]", e);
 			} catch (IllegalAccessException e) {
+				e.printStackTrace();
 				throw new RepositoryLoadException(
 						"Repository instantiation is not failed["
 								+ clazz.getName() + "]", e);
-			}
+			} 
 		}
 	}
 

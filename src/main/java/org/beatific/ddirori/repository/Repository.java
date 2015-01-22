@@ -11,11 +11,11 @@ public interface Repository<O, S extends Enum<?>> {
 
 	public S getState();
 	
-	public int save(Object state, Object object);
+	public void save(Object state, Object object);
 	
 	public O load(Object state, Object object);
 	
-	public int change(Object state, Object object);
+	public void change(Object state, Object object);
 	
-	public int remove(Object state, Object object);
+	public void remove(Object state, Object object);
 }
