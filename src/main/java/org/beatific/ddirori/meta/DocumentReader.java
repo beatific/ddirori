@@ -2,6 +2,7 @@ package org.beatific.ddirori.meta;
 
 import org.beatific.ddirori.bean.BeanDefinition;
 import org.beatific.ddirori.bean.BeanDefinitionNotFoundException;
+import org.beatific.ddirori.bean.NoBeanDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -29,13 +30,12 @@ public class DocumentReader {
 		try {
 			def = meta.getMeta(element.getNodeName());
 		} catch (BeanDefinitionNotFoundException e) {
-//			throw new DocumentParseException();
+			def = new NoBeanDefinition(element.getNodeName());
 		}
 		
-		if (def != null)  {
 			def.setParentElementDefinition(parentDefinition);
 			loadAttribute(element, def, meta);
-		}
+		
 			NodeList childElementsList = element.getChildNodes();
 			for (int i = 0; i < childElementsList.getLength(); i++) {
 				Node childNode = childElementsList.item(i);
@@ -43,13 +43,10 @@ public class DocumentReader {
 				switch(childNode.getNodeType()) {
 				case Node.ELEMENT_NODE : 
 					BeanDefinition childDefinition = completeElementDefinition(childNode, def, meta);
-					if (def != null) def.addChildElementDeifinition(childDefinition);
-//					loadAttribute(childNode, childDefinition, meta);
+					def.addChildElementDeifinition(childDefinition);
 					break;
 				}
 			}
-//		}
-		
 		return def;
 	}
 	

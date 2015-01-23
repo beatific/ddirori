@@ -7,11 +7,11 @@ import java.util.Map;
 
 import org.beatific.ddirori.type.TagType;
 
-public class BeanDefinition {
+public abstract class BeanDefinition {
 
-	private final TagType tagType;
-	private final String tagName;
-	private final Constructor constructor;
+	protected TagType tagType;
+	protected String tagName;
+	protected Constructor constructor;
 	private Integer level; 
 	
 	private final String BEAN_NAME_IDENTIFIER = "id"; 
@@ -20,12 +20,6 @@ public class BeanDefinition {
 	private final List<BeanDefinition> childElementDeifinitions = new ArrayList<BeanDefinition>(); 
 	private final Map<String, String>stringAttributes = new LinkedHashMap<String, String>();
 	private Map<String, Object>attributes = null;
-	
-	public BeanDefinition(org.beatific.ddirori.bean.annotation.Action annotation, Constructor constructor) {
-		this.tagType = annotation.type();
-		this.tagName = annotation.tag();
-		this.constructor = constructor;
-	}
 	
 	Integer getLevel() {
 		return level;
@@ -87,6 +81,14 @@ public class BeanDefinition {
 		return attributes();
 	}
 	
+	@Override
+	public String toString() {
+		return "BeanDefinition [tagType=" + tagType + ", tagName=" + tagName
+				+ ", stringAttributes=" + stringAttributes + ", attributes="
+				+ attributes + "]";
+	}
+
+
 	static abstract class AttributeLoader {
 		public abstract Map<String, Object> load(Map<String, String> attributes);
 	}

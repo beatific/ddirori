@@ -12,12 +12,14 @@ public class ApplicationContextUtils {
 	}
 	
 	public static void setApplicationContext(ApplicationContext currentContext) {
+		System.out.println("context" + currentContext);
 		context = currentContext;
 	}
 	
 	public static ServletContext getServletContext() {
 		return sc;
 	}
+	
 	public static ApplicationContext getApplicationContext() {
 		return context;
 	}

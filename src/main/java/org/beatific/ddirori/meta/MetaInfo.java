@@ -89,4 +89,11 @@ public class MetaInfo {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "MetaInfo [level=" + level + ", meta=" + meta + ", orderedMeta="
+				+ orderedMeta + ", attributeMeta=" + attributeMeta + "]";
+	}
+	
+
 }

@@ -4,5 +4,6 @@
 	xsi:schemaLocation="http://www.beatific.org/schema/ddirori-test http://www.beatific.org/schema/ddirori-test.xsd">
 	<test attribute="test1" test2="${test2}">
 	    <test2 attribute2= "test2"/>
+	        <test3 attribute3=""/>
 	</test>
 </ddirori>

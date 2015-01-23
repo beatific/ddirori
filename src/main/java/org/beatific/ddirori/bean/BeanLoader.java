@@ -17,17 +17,23 @@ public abstract class BeanLoader {
 	protected final String[] basePackage;
 	private final BeanContainer container;
 	private static final String STORE_NAME = "store";
+	private boolean isUseDDiroriExpression = false;
 	
     public BeanLoader(String basePackage) {
 		
-    	this(basePackage, null); 
+    	this(basePackage, null, false); 
 	}
 
-	public BeanLoader(String basePackage, ApplicationContext context) {
+    public BeanLoader(String basePackage, boolean isUseDDiroriExpression) {
+		
+    	this(basePackage, null, isUseDDiroriExpression); 
+	}
+
+	public BeanLoader(String basePackage, ApplicationContext context, boolean isUseDDiroriExpression) {
 		
 		this.container = context != null ? new SpringBeanContainer(context) : new DDiroriBeanContainer();
 		this.basePackage = basePackage == null ? null : basePackage.split(",");
-		this.extractor = new AttributeExtractor(this.basePackage) {
+		this.extractor = new AttributeExtractor(this.basePackage, this.isUseDDiroriExpression) {
 
 			@Override
 			protected Object getObject(BeanContainer container,
@@ -105,8 +111,14 @@ public abstract class BeanLoader {
 	
         });
     	System.out.println(definition.getBeanName());
-		Object object = definition.getConstructor().create(definition);
-		registerObject(definition, object);
+		try {
+			System.out.println(definition);
+			Object object = definition.getConstructor().create(definition);
+			registerObject(definition, object);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 	}
 	
 	public Object getBean(String beanName) {

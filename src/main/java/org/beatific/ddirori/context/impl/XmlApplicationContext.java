@@ -1,8 +1,8 @@
 package org.beatific.ddirori.context.impl;
 
 import org.beatific.ddirori.bean.BeanCreationException;
-import org.beatific.ddirori.bean.BeanDefinition;
 import org.beatific.ddirori.bean.Constructor;
+import org.beatific.ddirori.bean.DDiroriBeanDefinition;
 import org.beatific.ddirori.bean.annotation.Action;
 import org.beatific.ddirori.context.ApplicationContext;
 import org.beatific.ddirori.meta.DocumentReader;
@@ -23,8 +23,16 @@ public class XmlApplicationContext extends ApplicationContext {
 	    super(null);	
 	}
 	
+	public XmlApplicationContext(boolean isUseDDiroriExpression) {
+	    super(null, isUseDDiroriExpression);	
+	}
+	
 	public XmlApplicationContext(String basePackage) {
 	    super(basePackage);	
+	}
+	
+	public XmlApplicationContext(String basePackage, boolean isUseDDiroriExpression) {
+	    super(basePackage, isUseDDiroriExpression);	
 	}
 	
 	public void setValidation(boolean validation) {
@@ -54,7 +62,7 @@ public class XmlApplicationContext extends ApplicationContext {
 		for(Class<?> constructor : AnnotationUtils.findClassByAnnotation(basePackage, Action.class)) {
 			Action annotation = constructor.getAnnotation(Action.class);
 			try {
-				meta.setDefinition(annotation.tag(), new BeanDefinition(annotation, (Constructor)constructor.newInstance()));
+				meta.setDefinition(annotation.tag(), new DDiroriBeanDefinition(annotation, (Constructor)constructor.newInstance()));
 			} catch (InstantiationException e) {
 				throw new BeanCreationException("Constructor is failed to execute[" + constructor.getName() + "]");
 			} catch (IllegalAccessException e) {

@@ -9,14 +9,21 @@ public abstract class ApplicationContext extends BeanLoader {
 		
 		super(basePackage);
 	}
+    
+    public ApplicationContext(String basePackage, boolean isUseDDiroriExpression) {
+		
+		super(basePackage, isUseDDiroriExpression);
+	}
 
 	public void init() {
+		ApplicationContextUtils.setApplicationContext(this);
+		
 		try {
 			initContainer();
 		} catch (BeanDefinitionNotFoundException e) {
 			throw new ContextInitializeException("This Context is failed to initialize.");
 		}
-		ApplicationContextUtils.setApplicationContext(this);
+		
 	}
 	
 	public void destroy() {
