@@ -12,7 +12,6 @@ public class ApplicationContextUtils {
 	}
 	
 	public static void setApplicationContext(ApplicationContext currentContext) {
-		System.out.println("context" + currentContext);
 		context = currentContext;
 	}
 	

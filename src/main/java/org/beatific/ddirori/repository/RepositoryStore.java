@@ -1,10 +1,11 @@
 package org.beatific.ddirori.repository;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.beatific.ddirori.utils.AnnotationUtils;
-import org.springframework.core.GenericTypeResolver;
 
 public class RepositoryStore {
 
@@ -20,9 +21,12 @@ public class RepositoryStore {
 	}
 
 	private synchronized void addRepository(Repository<?, ?> repository) {
-		Class<?>[] classes = GenericTypeResolver.resolveTypeArguments(
-				repository.getClass(), Repository.class);
-		Class<?> clazz = classes[0];
+		
+		Type type = ((ParameterizedType)repository.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+		
+//		Class<?>[] classes = GenericTypeResolver.resolveTypeArguments(
+//				repository.getClass(), Repository.class);
+		Class<?> clazz = (Class<?>)type;
 		if (clazz == null)
 			throw new RepositoryTypeNotFoundException(
 					"Can't find the generic type of repository["
@@ -38,6 +42,7 @@ public class RepositoryStore {
 	public void save(Object object) {
 
 		Repository<?, ?> repository = getRepository(object);
+		if(repository == null) throw new NullPointerException("Repository is not Found for Class[" + object.getClass() + "]");
 		repository.save(repository.getState(), object);
 	}
 

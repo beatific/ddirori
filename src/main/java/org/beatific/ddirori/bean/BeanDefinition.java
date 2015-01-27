@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.beatific.ddirori.type.TagType;
 
-public abstract class BeanDefinition {
+public abstract class BeanDefinition implements Cloneable {
 
 	protected TagType tagType;
 	protected String tagName;
@@ -17,9 +17,17 @@ public abstract class BeanDefinition {
 	private final String BEAN_NAME_IDENTIFIER = "id"; 
 	
 	private BeanDefinition parentElementDefinition;
-	private final List<BeanDefinition> childElementDeifinitions = new ArrayList<BeanDefinition>(); 
-	private final Map<String, String>stringAttributes = new LinkedHashMap<String, String>();
+	private List<BeanDefinition> childElementDeifinitions; 
+	private Map<String, String>stringAttributes;
 	private Map<String, Object>attributes = null;
+	
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new BeanClonException("Can't creat clone of BeanDefinition[" + this.getTagName() + "]");
+		}
+	}
 	
 	Integer getLevel() {
 		return level;
@@ -60,6 +68,7 @@ public abstract class BeanDefinition {
 	}
 	public void addChildElementDeifinition(
 			BeanDefinition childElementDeifinition) {
+		if(childElementDeifinitions == null)childElementDeifinitions = new ArrayList<BeanDefinition>();
 		this.childElementDeifinitions.add(childElementDeifinition);
 	}
 	
@@ -67,7 +76,8 @@ public abstract class BeanDefinition {
 		return stringAttributes;
 	}
 	
-	void setStringAttribute(String key, String value) {
+	public void addStringAttribute(String key, String value) {
+		if(this.stringAttributes == null)stringAttributes = new LinkedHashMap<String, String>();
 		this.stringAttributes.put(key, value);
 	}
 	
@@ -84,6 +94,7 @@ public abstract class BeanDefinition {
 	@Override
 	public String toString() {
 		return "BeanDefinition [tagType=" + tagType + ", tagName=" + tagName
+				+ ", constructor=" + constructor + ", level=" + level
 				+ ", stringAttributes=" + stringAttributes + ", attributes="
 				+ attributes + "]";
 	}

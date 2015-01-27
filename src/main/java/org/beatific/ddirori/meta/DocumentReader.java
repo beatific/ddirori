@@ -11,42 +11,45 @@ import org.w3c.dom.NodeList;
 
 public class DocumentReader {
 
-	public void read(Document doc, MetaInfo meta) {
+	public void read(Document doc, MetaInfo meta, boolean isUseDDiroriExpression) {
 		
 		Element element = doc.getDocumentElement();
 		String tagName = element.getNodeName();
-		BeanDefinition def = null;
-		try {
-			def = meta.getMeta(tagName);
-		} catch (BeanDefinitionNotFoundException e) {}
-		
+		BeanDefinition def = getBeanDefinition(element, meta);
 		completeElementDefinition(element, def, meta);
-		meta.loadLevel();
+		meta.loadLevel(isUseDDiroriExpression);
 	}
 	
-	protected BeanDefinition completeElementDefinition(Node element, BeanDefinition parentDefinition, MetaInfo meta) {
+	private BeanDefinition getBeanDefinition(Node element, MetaInfo meta) {
 		
 		BeanDefinition def = null;
 		try {
-			def = meta.getMeta(element.getNodeName());
+			def = (BeanDefinition)meta.getMeta(element.getNodeName()).clone();
 		} catch (BeanDefinitionNotFoundException e) {
 			def = new NoBeanDefinition(element.getNodeName());
 		}
 		
-			def.setParentElementDefinition(parentDefinition);
-			loadAttribute(element, def, meta);
+		return def;
+	}
+	
+	protected BeanDefinition completeElementDefinition(Node element, BeanDefinition parentDefinition, MetaInfo meta) {
 		
-			NodeList childElementsList = element.getChildNodes();
-			for (int i = 0; i < childElementsList.getLength(); i++) {
-				Node childNode = childElementsList.item(i);
+		BeanDefinition def = getBeanDefinition(element, meta);
+		
+		def.setParentElementDefinition(parentDefinition);
+		loadAttribute(element, def, meta);
+		
+		NodeList childElementsList = element.getChildNodes();
+		for (int i = 0; i < childElementsList.getLength(); i++) {
+			Node childNode = childElementsList.item(i);
 
-				switch(childNode.getNodeType()) {
-				case Node.ELEMENT_NODE : 
-					BeanDefinition childDefinition = completeElementDefinition(childNode, def, meta);
-					def.addChildElementDeifinition(childDefinition);
-					break;
-				}
+			switch(childNode.getNodeType()) {
+			case Node.ELEMENT_NODE : 
+				BeanDefinition childDefinition = completeElementDefinition(childNode, def, meta);
+				def.addChildElementDeifinition(childDefinition);
+				break;
 			}
+		}
 		return def;
 	}
 	
@@ -54,7 +57,7 @@ public class DocumentReader {
 		NamedNodeMap nodeAttributes = element.getAttributes();
 		for(int i =0; i < nodeAttributes.getLength(); i++) {
 			Node attribute = nodeAttributes.item(i);
-			definition.getStringAttributes().put(attribute.getNodeName(), attribute.getNodeValue());
+			definition.addStringAttribute(attribute.getNodeName(), attribute.getNodeValue());
 			meta.setAttributeDefinition(definition, attribute.getNodeValue());
 		}
 	}

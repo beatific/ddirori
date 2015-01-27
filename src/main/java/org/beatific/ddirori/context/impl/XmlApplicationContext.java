@@ -53,7 +53,7 @@ public class XmlApplicationContext extends ApplicationContext {
 		Document doc = buildDocument();
 		MetaInfo meta = initMeta();
 		DocumentReader reader = new DocumentReader();
-		reader.read(doc, meta);
+		reader.read(doc, meta, isUseDDiroriExpression);
 		return meta;
 	}
 	

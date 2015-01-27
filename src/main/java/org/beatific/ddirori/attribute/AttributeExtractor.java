@@ -13,7 +13,7 @@ public abstract class AttributeExtractor {
 	private final static String REGEX_TYPE = "\\$(\\w+)\\[(\\w*)\\]";
 	private final static String REGEX_METHOD = "(\\w+)\\.(\\w+)\\(([\\w\\,\\s\\'\\-\\.\\$\\[\\]]*)\\)";
 	private final static String REGEX_OBJECT = "\\$\\{(\\w*)\\}";
-	private final static String REGEX_STRING = "\\$S\\{(\\w*)\\}";
+	private final static String REGEX_STRING = "\\$S\\{([^\\{S\\}]*)\\}";
 	private AttributeTypeCaster typeCaster = null;
 	private DefinitionTypeCaster definitionCaster = null;
 	private boolean isUseDDiroriExpression = false;
@@ -51,7 +51,6 @@ public abstract class AttributeExtractor {
     	Matcher stringMatcher = Parser.getMatcher(attribute, REGEX_STRING);
 		Matcher definitionMatcher = Parser.getMatcher(attribute, REGEX_DEFINITION);
 		Matcher typeMatcher = Parser.getMatcher(attribute, REGEX_TYPE);
-		
 		if(definitionMatcher.find()) {
 			return processReservedWord(definitionMatcher.group(1));
 		}
@@ -67,7 +66,6 @@ public abstract class AttributeExtractor {
 		StringBuffer buffer = new StringBuffer();
 		
 	    while (stringMatcher.find()) {
-	      
 	      Object resultCandidator = processMethod(container, stringMatcher.group(1));
 	      
 	      if(resultCandidator == null)return null;

@@ -33,10 +33,11 @@ public class MetaInfo {
 		return defs;
 	}
 	
-	public void loadLevel() {
+	public void loadLevel(boolean isUseDDiroriExpression) {
 	    Integer level = orderedMeta.size() + 1;
 	    this.level = level;
-	    loadLevelByMetaAnalysis(level);
+	    if(isUseDDiroriExpression)loadLevelByMetaAnalysis(level);
+	    else loadAllOneLevel();
 	    if(attributeMeta.size() > 0) {
 	    	throw new ReferenceNotFoundException("This Reference Bean is not Found[" + Parser.getRelatedObjectNames(attributeMeta.keySet().toArray(new String[0])[0]).get(0) + "]");
 	    }
@@ -50,6 +51,12 @@ public class MetaInfo {
 		this.attributeMeta.put(definition, attribute);
 	}
 
+	private void loadAllOneLevel() {
+		for(BeanDefinition definition : attributeMeta.keySet()) {
+			orderedMeta.put(level, definition);
+		}
+		removeOrderedAttribute();
+	}
 	protected void loadLevelByMetaAnalysis(Integer level) {
 		
 		if(attributeMeta.size() == 0) return;
@@ -69,7 +76,7 @@ public class MetaInfo {
 			
 			if(existsBelowLevel) {
 				orderedMeta.put(level, definition);
-			}
+			} 
 			
 		}
 		removeOrderedAttribute();

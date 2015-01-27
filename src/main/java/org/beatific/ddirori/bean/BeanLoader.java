@@ -17,7 +17,7 @@ public abstract class BeanLoader {
 	protected final String[] basePackage;
 	private final BeanContainer container;
 	private static final String STORE_NAME = "store";
-	private boolean isUseDDiroriExpression = false;
+	protected boolean isUseDDiroriExpression = false;
 	
     public BeanLoader(String basePackage) {
 		
@@ -64,9 +64,8 @@ public abstract class BeanLoader {
 	protected abstract MetaInfo buildMetaInfo();
 	
 	private void init(MetaInfo meta) throws BeanDefinitionNotFoundException {
-		for(int i = 0 ; i < meta.getLevel(); i++)
-			for(BeanDefinition definition : meta.getMetaByLevel(i+1))
-				load(definition);
+		loadDefinition(meta);
+		loadObject(meta);
 	}
 	
     protected void registerObject(BeanDefinition definition, Object object) {
@@ -89,12 +88,13 @@ public abstract class BeanLoader {
 		}
 	}
 
-	private void load(BeanDefinition definition) {
-		
-		loadWithoutRelation(definition);
+	private void loadDefinition(MetaInfo meta) throws BeanDefinitionNotFoundException {
+        for(int i = 0 ; i < meta.getLevel(); i++)
+			for(BeanDefinition definition : meta.getMetaByLevel(i+1)) 
+				loadDefinition(definition);
 	}
 	
-	private void loadWithoutRelation(BeanDefinition definition) {
+	private void loadDefinition(BeanDefinition definition) {
     	
     	definition.loadAttributes(new AttributeLoader(){
 
@@ -103,6 +103,7 @@ public abstract class BeanLoader {
 					Map<String, String> attributes) {
 				Map<String, Object> map = new HashMap<String, Object>();
 				for(String key : attributes.keySet()) {
+					
 					String value = attributes.get(key);
 					map.put(key, extractor.extract(getBeanContainer(), value));
 				}
@@ -110,15 +111,23 @@ public abstract class BeanLoader {
 			}
 	
         });
-    	System.out.println(definition.getBeanName());
+	}
+	
+	private void loadObject(MetaInfo meta) throws BeanDefinitionNotFoundException {
+		
+		for(int i = 0 ; i < meta.getLevel(); i++)
+			for(BeanDefinition definition : meta.getMetaByLevel(i+1)) 
+				loadObject(definition);
+		
+	}
+	
+	private void loadObject(BeanDefinition definition) throws BeanDefinitionNotFoundException {
 		try {
-			System.out.println(definition);
 			Object object = definition.getConstructor().create(definition);
 			registerObject(definition, object);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
 	}
 	
 	public Object getBean(String beanName) {
