@@ -5,15 +5,18 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.beatific.ddirori.bean.BeanContainerDelegator;
 import org.beatific.ddirori.utils.AnnotationUtils;
 
 public class RepositoryStore {
 
 	private Map<Class<?>, Repository<?, ?>> store = new HashMap<Class<?>, Repository<?, ?>>();
 	private String[] basePackage;
+	private BeanContainerDelegator delegator;
 
-	public RepositoryStore(String[] basePackage) {
+	public RepositoryStore(String[] basePackage, BeanContainerDelegator delegator) {
 		this.basePackage = basePackage;
+		this.delegator = delegator;
 	}
 
 	private synchronized Repository<?, ?> getRepository(Object object) {
@@ -37,6 +40,7 @@ public class RepositoryStore {
 							+ repository.getClass().getName() + "]");
 		
 		store.put(clazz, repository);
+		delegator.register(repository.getClass().getSimpleName(), repository);
 	}
 
 	public void save(Object object) {
@@ -64,15 +68,15 @@ public class RepositoryStore {
 		repository.remove(repository.getState(), object);
 	}
 
-	public void load() {
+	public void loadStore() {
 		for (Class<?> clazz : AnnotationUtils.findClassByAnnotation(
 				this.basePackage, Store.class)) {
 			
 			try {
 				Object repository = clazz.newInstance();
-				if (repository instanceof Repository)
+				if (repository instanceof Repository) {
 					addRepository((Repository<?, ?>) repository);
-				else
+				} else
 					throw new RepositoryLoadException(
 							"Only repository instance can attach Store annotation["
 									+ clazz.getName() + "]");

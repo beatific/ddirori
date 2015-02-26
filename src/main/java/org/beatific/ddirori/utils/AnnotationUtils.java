@@ -1,6 +1,8 @@
 package org.beatific.ddirori.utils;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,19 +30,26 @@ public class AnnotationUtils {
 		return ClassUtils.forName(metadataReader.getClassMetadata().getClassName(), ClassUtils.getDefaultClassLoader());
 	}
 	
-	private static boolean isClassWithAnnotation(Class<?> clazz, Class annotation) {
+	private static boolean isClassWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotation) {
 		return clazz.getAnnotation(annotation) != null;
 	}
 	
-	public static List<Class<?>> findClassByAnnotation(Class<?> annotationType) {
+	private static boolean isClassWithAnnotationField(Class<?> clazz, Class<? extends Annotation> annotation) {
+		Field[] fields = clazz.getDeclaredFields();
+		for(Field field : fields) 
+			if(field.getAnnotation(annotation) != null) return true;
+		return false;
+	}
+	
+	public static List<Class<?>> findClassByAnnotation(Class<? extends Annotation> annotationType) {
 		return findClassByAnnotation(new String(), annotationType);
 	}
 	
-	public static List<Class<?>> findClassByAnnotation(String basePackage, Class<?> annotationType) {
+	public static List<Class<?>> findClassByAnnotation(String basePackage, Class<? extends Annotation> annotationType) {
 		return findClassByAnnotation(new String[]{basePackage}, annotationType);
 	}
 	
-	public static List<Class<?>> findClassByAnnotation(String[] basePackages, Class<?> annotationType) {
+	public static List<Class<?>> findClassByAnnotation(String[] basePackages, Class<? extends Annotation> annotationType) {
 		List<Class<?>> classes = new ArrayList<Class<?>>();
 		for(String basePackage : basePackages)
 			try {
@@ -52,6 +61,33 @@ public class AnnotationUtils {
 							MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
 							Class<?> clazz = getClass(metadataReader);
 							if (isClassWithAnnotation(clazz, annotationType)) {
+								classes.add(clazz);
+							}
+						}catch (Throwable ex) {
+							throw new BeanDefinitionStoreException(
+									"Failed to read class: " + resource, ex);
+						}
+					}
+				}
+			}
+			catch (IOException ex) {
+				throw new BeanDefinitionStoreException("I/O failure during classpath scanning", ex);
+			}
+		return classes;
+	}
+	
+	public static List<Class<?>> findClassByFieldAnnotation(String[] basePackages, Class<? extends Annotation> annotationType) {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		for(String basePackage : basePackages)
+			try {
+				String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +resolveBasePackage(basePackage) + "/" + DEFAULT_RESOURCE_PATTERN;
+				Resource[] resources = resourcePatternResolver.getResources(packageSearchPath);
+				for (Resource resource : resources) {
+					if (resource.isReadable()) {
+						try {
+							MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
+							Class<?> clazz = getClass(metadataReader);
+							if (isClassWithAnnotationField(clazz, annotationType)) {
 								classes.add(clazz);
 							}
 						}catch (Throwable ex) {

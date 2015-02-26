@@ -1,5 +1,8 @@
 package org.beatific.ddirori.bean.impl;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 import org.springframework.beans.factory.config.SingletonBeanRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.XmlWebApplicationContext;
@@ -26,6 +29,17 @@ public class SpringBeanContainer extends AbstractBeanContainerWithTemp {
 	@Override
 	public Object getBean(String beanName) {
 		return registry.getSingleton(beanName);
+	}
+
+	@Override
+	protected Object findBean(Class<?> clazz) {
+		return null;
+	}
+
+	@Override
+	public Map<String, Object> getBeanWithAnnotation(
+			Class<? extends Annotation> annotationClass) {
+		return null;
 	}
 
 }

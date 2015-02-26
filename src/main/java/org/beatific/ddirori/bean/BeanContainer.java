@@ -1,5 +1,8 @@
 package org.beatific.ddirori.bean;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
 public abstract class BeanContainer {
 	
 	protected abstract void registerBean(String beanName, Object bean);
@@ -24,5 +27,9 @@ public abstract class BeanContainer {
 		clearTemp();
 	}
 	
+	protected abstract Object findBean(Class<?> clazz);
+	
 	public abstract Object getBean(String beanName);
+	
+	public abstract Map<String, Object> getBeanWithAnnotation(Class<? extends Annotation> annotationClass);
 }

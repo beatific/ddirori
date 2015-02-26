@@ -48,14 +48,16 @@ public class DDiroriListener implements ServletContextListener {
 	protected ApplicationContext createWebApplicationContext(ServletContext sc){
 
 		String basePackage = sc.getInitParameter(BASE_PACKAGE);
+		if(basePackage == null) basePackage = "org.beatific.daram";
+		XmlApplicationContext context  = new XmlApplicationContext(basePackage);
 		
-//		XmlApplicationContext context  = new XmlApplicationContext(basePackage);
-		XmlApplicationContext context  = new XmlApplicationContext("org.beatific.daram");
 		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION);
 		if (configLocationParam != null) {
 			context.setFilePath(configLocationParam);
+		} else {
+			context.setFilePath("daram-context-spring.xml");
 		}
-		context.setFilePath("daram-context-spring.xml");
+		
 		sc.setAttribute(ROOT_APPLICATION_CONTEXT, context);
 		return context;
 	}
