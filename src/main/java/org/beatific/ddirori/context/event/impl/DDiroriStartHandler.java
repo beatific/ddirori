@@ -16,11 +16,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.stereotype.Component;
 
-/**
- * @author beatificho
- * 
- * spring refresh() is not supported by ddirori start handler
- */
 @Component
 @EventListener
 public class DDiroriStartHandler extends AbstractEventHandler<DDiroriStartEvent> implements ApplicationListener<ContextStartedEvent> {
@@ -107,7 +102,6 @@ public class DDiroriStartHandler extends AbstractEventHandler<DDiroriStartEvent>
 
 	public synchronized void onApplicationEvent(ContextStartedEvent paramE) {
 
-		logger.debug("=====================================recive startEvent=======================================");
 		springContext = paramE.getApplicationContext();
 
 		logger.debug("isStartDDirori" + isStartDDirori);
