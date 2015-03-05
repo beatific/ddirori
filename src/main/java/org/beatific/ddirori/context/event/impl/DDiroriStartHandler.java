@@ -86,30 +86,35 @@ public class DDiroriStartHandler extends AbstractEventHandler<DDiroriStartEvent>
 			inject(entry.getValue());
 	}
 	
-	public synchronized void handleMyEvent(DDiroriStartEvent event) {
+	public void handleMyEvent(DDiroriStartEvent event) {
 
-		ddiroriContext = event.getApplicationContext();
-
-		logger.debug("isStartSpring" + isStartSpring);
-		
-		if (isStartSpring) {
-			injectDependency();
+		synchronized(DDiroriStartHandler.class) {
+			
+			ddiroriContext = event.getApplicationContext();
+	
+			logger.debug("isStartSpring" + isStartSpring);
+			
+			if (isStartSpring) {
+				injectDependency();
+			}
+	
+			isStartDDirori = true;
 		}
-
-		isStartDDirori = true;
 
 	}
 
-	public synchronized void onApplicationEvent(ContextStartedEvent paramE) {
+	public void onApplicationEvent(ContextStartedEvent paramE) {
 
-		springContext = paramE.getApplicationContext();
-
-		logger.debug("isStartDDirori" + isStartDDirori);
-		if (isStartDDirori) {
-			injectDependency();
+		synchronized(DDiroriStartHandler.class) {
+			springContext = paramE.getApplicationContext();
+	
+			logger.debug("isStartDDirori" + isStartDDirori);
+			if (isStartDDirori) {
+				injectDependency();
+			}
+	
+			isStartSpring = true;
 		}
-
-		isStartSpring = true;
 	}
 
 }

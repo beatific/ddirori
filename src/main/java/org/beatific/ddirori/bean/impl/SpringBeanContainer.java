@@ -13,7 +13,7 @@ public class SpringBeanContainer extends AbstractBeanContainerWithTemp {
 	
 	public SpringBeanContainer(ApplicationContext context){
 		if(context instanceof XmlWebApplicationContext)registry = ((XmlWebApplicationContext)context).getBeanFactory();
-		else throw new NotSupportedApplicationContextExcpetion("Daram support only XmlWebApplicationContext for Spring[" + context.getClass().getName() + "]");
+		else throw new NotSupportedApplicationContextExcpetion("DDirori support only XmlWebApplicationContext for Spring[" + context.getClass().getName() + "]");
 	}
 	
 	@Override
