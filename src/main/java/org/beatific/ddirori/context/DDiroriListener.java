@@ -4,6 +4,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.beatific.ddirori.bean.impl.DDiroriBeanContainer;
 import org.beatific.ddirori.context.impl.XmlApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -16,6 +19,7 @@ public class DDiroriListener implements ServletContextListener {
 	public static final String SPRING_CONFIG_LOCATION = "contextConfigLocation";
 	private static final String BASE_PACKAGE = "basePackage";
 	private static final String TIME_OUT = "timeout";
+	private Log logger = LogFactory.getLog(DDiroriBeanContainer.class);
 	
 	public void contextInitialized(ServletContextEvent event) {
 		ServletContext sc = event.getServletContext();
@@ -52,6 +56,10 @@ public class DDiroriListener implements ServletContextListener {
 		XmlApplicationContext context  = new XmlApplicationContext(basePackage);
 		
 		String configLocationParam = sc.getInitParameter(CONFIG_LOCATION);
+		
+		logger.debug("BASE_PACKAGE[" + basePackage + "]");
+		logger.debug("CONFIG_LOCATION[" + configLocationParam + "]");
+		
 		if (configLocationParam != null) {
 			context.setFilePath(configLocationParam);
 		} else {
